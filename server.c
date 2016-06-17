@@ -211,13 +211,13 @@ main (int argc, char *argv[])
                  and won't get a notification again for the same
                  data. */
               int done = 0;
-
+			char *buf = malloc(1024000);
               while (1)
                 {
                   ssize_t count;
-                  char buf[512];
-
-                  count = read (events[i].data.fd, buf, sizeof buf);
+                  //char buf[512];
+                  count = recv(events[i].data.fd, buf, 1024000, 0);
+				  printf("recv len %d\n", count);
                   if (count == -1)
                     {
                       /* If errno == EAGAIN, that means we have read all
@@ -238,12 +238,12 @@ main (int argc, char *argv[])
                     }
 
                   /* Write the buffer to standard output */
-                  s = write (1, buf, count);
+                  /*s = write (1, buf, count);
                   if (s == -1)
                     {
                       perror ("write");
                       abort ();
-                    }
+                    }*/
                 }
 
               if (done)
@@ -255,6 +255,7 @@ main (int argc, char *argv[])
                      from the set of descriptors which are monitored. */
                   close (events[i].data.fd);
                 }
+				free(buf);
             }
         }
     }
